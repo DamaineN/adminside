@@ -199,7 +199,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
               name="price"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Price ($)</FormLabel>
+                  <FormLabel>Price (RM)</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -217,7 +217,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
               name="expense"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Expense ($)</FormLabel>
+                  <FormLabel>Expense (RM)</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
