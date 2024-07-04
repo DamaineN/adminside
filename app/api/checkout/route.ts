@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
-import { v4 as uuidv4 } from 'uuid';
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -13,7 +12,6 @@ export async function OPTIONS() {
 }
 
 export async function POST(req: NextRequest) {
-
   try {
     const { cartItems, customer } = await req.json();
 
@@ -21,21 +19,19 @@ export async function POST(req: NextRequest) {
       return new NextResponse("Not enough data to checkout", { status: 400 });
     }
 
-    const idempotencyKey = uuidv4();
-
-
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
       shipping_address_collection: {
-        allowed_countries: ["MY"],
+        allowed_countries: ["US", "CA"],
       },
       shipping_options: [
-        { shipping_rate: "shr_1PUTEUAp4CgBakIzbei8EJMH" },
+        { shipping_rate: "shr_1MfufhDgraNiyvtnDGef2uwK" },
+        { shipping_rate: "shr_1OpHFHDgraNiyvtnOY4vDjuY" },
       ],
       line_items: cartItems.map((cartItem: any) => ({
         price_data: {
-          currency: "myr",
+          currency: "cad",
           product_data: {
             name: cartItem.item.title,
             metadata: {
@@ -51,8 +47,6 @@ export async function POST(req: NextRequest) {
       client_reference_id: customer.clerkId,
       success_url: `${process.env.ECOMMERCE_STORE_URL}/payment_success`,
       cancel_url: `${process.env.ECOMMERCE_STORE_URL}/cart`,
-    }, {
-      idempotencyKey
     });
 
     return NextResponse.json(session, { headers: corsHeaders });
@@ -62,4 +56,3 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export const dynamic = "force-dynamic";
