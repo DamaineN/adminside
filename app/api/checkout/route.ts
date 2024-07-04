@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
+import { v4 as uuidv4 } from 'uuid';
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -12,12 +13,16 @@ export async function OPTIONS() {
 }
 
 export async function POST(req: NextRequest) {
+
   try {
     const { cartItems, customer } = await req.json();
 
     if (!cartItems || !customer) {
       return new NextResponse("Not enough data to checkout", { status: 400 });
     }
+
+    const idempotencyKey = uuidv4();
+
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -46,6 +51,8 @@ export async function POST(req: NextRequest) {
       client_reference_id: customer.clerkId,
       success_url: `${process.env.ECOMMERCE_STORE_URL}/payment_success`,
       cancel_url: `${process.env.ECOMMERCE_STORE_URL}/cart`,
+    }, {
+      idempotencyKey
     });
 
     return NextResponse.json(session, { headers: corsHeaders });
