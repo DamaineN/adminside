@@ -26,8 +26,8 @@ import MultiSelect from "../custom ui/MultiSelect";
 import Loader from "../custom ui/Loader";
 
 const formSchema = z.object({
-  title: z.string().min(2).max(20),
-  description: z.string().min(2).max(500).trim(),
+  title: z.string().min(2).max(100),
+  description: z.string().min(2).max(10000).trim(),
   media: z.array(z.string()),
   category: z.string(),
   collections: z.array(z.string()),
@@ -163,7 +163,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
                   <Textarea
                     placeholder="Description"
                     {...field}
-                    rows={5}
+                    rows={20}
                     onKeyDown={handleKeyPress}
                   />
                 </FormControl>
